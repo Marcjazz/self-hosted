@@ -2,8 +2,8 @@ name: Deploy Immich to Kubernetes
 
 on:
   push:
-#    paths:
-#      - 'immich/**'
+    #    paths:
+    #      - 'immich/**'
     branches:
       - master
 
@@ -23,12 +23,13 @@ jobs:
         uses: azure/setup-helm@v3
         with:
           version: 'latest'
-
-      - name: Ensure Namespace Exists
-        run: kubectl create namespace immich --dry-run=client -o yaml | kubectl apply -f -
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Authenticate with Cluster
         run: echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+
+      - name: Ensure Namespace Exists
+        run: kubectl create namespace immich --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Apply PVC
         run: kubectl apply -f immich/k8s/01-library-pvc.yaml -n immich
