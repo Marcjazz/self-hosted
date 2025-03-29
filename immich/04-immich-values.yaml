@@ -1,0 +1,93 @@
+## This chart relies on the common library chart from bjw-s
+## You can find it at https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+## Refer there for more detail about the supported values
+
+# These entries are shared between all the Immich components
+apiVersion: v1
+env:
+  REDIS_HOSTNAME: '{{ printf "%s-redis-master" .Release.Name }}'
+  DB_HOSTNAME: '{{ .Release.Name }}-postgresql'
+  DB_USERNAME:
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: username
+  DB_PASSWORD:
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: password
+  DB_DATABASE_NAME:
+    valueFrom:
+      secretKeyRef:
+        name: postgres-secret
+        key: database
+
+  IMMICH_MACHINE_LEARNING_URL: '{{ printf "http://%s-machine-learning:3003" .Release.Name }}'
+
+image:
+  tag: v1.119.0
+
+immich:
+  metrics:
+    # Enabling this will create the service monitors needed to monitor immich with the prometheus operator
+    enabled: false
+  persistence:
+    # Main data store for all photos shared between different components.
+    library:
+      # Automatically creating the library volume is not supported by this chart
+      # You have to specify an existing PVC to use
+      existingClaim: 'immich-library-pvc'
+  # configuration is immich-config.json converted to yaml
+  # ref: https://immich.app/docs/install/config-file/
+  #
+  configuration:
+    storageTemplate:
+      enabled: true
+      template: '{{y}}/{{y}}-{{MM}}-{{dd}}/{{filename}}{{hh}}{{mm}}{{ss}}'
+
+# Dependencies
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+
+# Immich components
+
+server:
+  enabled: true
+  image:
+    repository: ghcr.io/immich-app/immich-server
+    pullPolicy: IfNotPresent
+  ingress:
+    main:
+      enabled: true
+      annotations:
+        # Ensure Nginx allows large uploads
+        nginx.ingress.kubernetes.io/proxy-body-size: '0'
+        nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+
+      hosts:
+        - host: immich.local # Change this to your actual domain
+          paths:
+            - path: /
+              pathType: Prefix
+      tls: []
+
+machine-learning:
+  enabled: false
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    pullPolicy: IfNotPresent
+  env:
+    TRANSFORMERS_CACHE: /cache
+  persistence:
+    cache:
+      enabled: true
+      size: 10Gi
+      # Optional: Set this to pvc to avoid downloading the ML models every start.
+      type: emptyDir
+      accessMode: ReadWriteMany
+      # storageClass: standard
