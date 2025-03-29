@@ -2,8 +2,8 @@ name: Deploy Immich to Kubernetes
 
 on:
   push:
-    paths:
-      - 'immich/**'
+#    paths:
+#      - 'immich/**'
     branches:
       - master
 
