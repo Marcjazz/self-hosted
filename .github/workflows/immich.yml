@@ -26,7 +26,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Authenticate with Cluster
-        run: echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
 
       - name: Ensure Namespace Exists
         run: kubectl create namespace immich --dry-run=client -o yaml | kubectl apply -f -
