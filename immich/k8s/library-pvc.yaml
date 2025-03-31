@@ -9,5 +9,5 @@ spec:
   resources:
     requests:
       storage: 15Gi
-  storageClassName: standard  # Change this to match your cluster’s storage class
+  storageClassName: local-path  # Change this to match your cluster’s storage class
 
