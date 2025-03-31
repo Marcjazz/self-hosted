@@ -34,7 +34,7 @@ jobs:
         run: kubectl create namespace immich --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Apply PVC
-        run: kubectl apply -f immich/k8s/01-library-pvc.yaml -n immich
+        run: kubectl apply -f immich/k8s/library-pvc.yaml -n immich
 
       - name: Create Kubernetes Secret for PostgreSQL
         run: |
@@ -47,9 +47,9 @@ jobs:
       - name: Deploy PostgreSQL
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm upgrade --install immich-postgres bitnami/postgresql -f immich/k8s/03-postgres-values.yaml -n immich
+          helm upgrade --install immich-postgres bitnami/postgresql -f immich/k8s/postgres-values.yaml -n immich
 
       - name: Deploy Immich
         run: |
           helm repo add immich https://immich-app.github.io/immich-charts
-          helm upgrade --install immich immich/immich -f immich/k8s/03-immich-values.yaml -n immich
+          helm upgrade --install immich immich/immich -f immich/k8s/immich-values.yaml -n immich
