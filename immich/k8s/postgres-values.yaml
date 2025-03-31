@@ -11,14 +11,14 @@ global:
   postgresql:
     auth:
       existingSecret: postgres-secret
-      postgresPasswordKey: postgresPassword
+      postgresPasswordKey: postgres-password
 
 primary:
   containerSecurityContext:
     readOnlyRootFilesystem: false
   initdb:
     user: 'postgres'
-    password: {{ .Values.global.postgresql.auth.postgresPasswordKey | default "postgre-password" }}
+    password: '{{ .Values.global.postgresql.auth.postgresPasswordKey}}'
     scripts:
       create-extensions.sql: |
         CREATE EXTENSION cube;
