@@ -2,8 +2,8 @@ name: Deploy Immich to Kubernetes
 
 on:
   push:
-    #    paths:
-    #      - 'immich/**'
+    paths:
+      - 'immich/**'
     branches:
       - master
 
@@ -47,9 +47,9 @@ jobs:
       - name: Deploy PostgreSQL
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami
-          helm upgrade --install immich-postgres bitnami/postgresql -f immich/k8s/02-postgres-values.yaml -n immich
+          helm upgrade --install immich-postgres bitnami/postgresql -f immich/k8s/03-postgres-values.yaml -n immich
 
       - name: Deploy Immich
         run: |
           helm repo add immich https://immich-app.github.io/immich-charts
-          helm upgrade --install immich immich/immich -f immich/03-immich-values.yaml -n immich
+          helm upgrade --install immich immich/immich -f immich/k8s/03-immich-values.yaml -n immich
