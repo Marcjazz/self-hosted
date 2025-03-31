@@ -10,17 +10,19 @@ global:
     allowInsecureImages: true
   postgresql:
     auth:
-      username: immich
-      database: immich
-      password: immich-password
-      postgresPassword: postgres-password
+      existingSecret: postgres-secret
 
 primary:
+  postgresqlService: 'immich-postgres'
   containerSecurityContext:
     readOnlyRootFilesystem: false
   initdb:
-    user: postgres
-    password: postgres-password
+    user: 'postgres'
+    password:
+      valueFrom:
+        secretKeyRef:
+          name: postgres-secret
+          key: postgresPassword
     scripts:
       create-extensions.sql: |
         CREATE EXTENSION cube;
