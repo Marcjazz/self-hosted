@@ -13,16 +13,11 @@ global:
       existingSecret: postgres-secret
 
 primary:
-  postgresqlService: 'immich-postgres'
   containerSecurityContext:
     readOnlyRootFilesystem: false
   initdb:
     user: 'postgres'
-    password:
-      valueFrom:
-        secretKeyRef:
-          name: postgres-secret
-          key: postgresPassword
+    password: {{ .Values.global.postgresql.auth.postgresPassword }}
     scripts:
       create-extensions.sql: |
         CREATE EXTENSION cube;
