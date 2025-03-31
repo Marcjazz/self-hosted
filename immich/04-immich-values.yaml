@@ -63,7 +63,7 @@ server:
     pullPolicy: IfNotPresent
   ingress:
     main:
-      enabled: true
+      enabled: false
       annotations:
         # Ensure Nginx allows large uploads
         nginx.ingress.kubernetes.io/proxy-body-size: '0'
