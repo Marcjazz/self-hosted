@@ -18,7 +18,7 @@ primary:
     readOnlyRootFilesystem: false
   initdb:
     user: 'postgres'
-    password: '{{ .Values.global.postgresql.auth.postgresPasswordKey}}'
+    password: '{{ .Values.global.postgresql.auth.postgresPasswordKey }}'
     scripts:
       create-extensions.sql: |
         CREATE EXTENSION cube;
