@@ -9,5 +9,4 @@ spec:
   resources:
     requests:
       storage: 15Gi
-  storageClassName: standard
 

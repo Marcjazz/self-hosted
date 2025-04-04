@@ -17,6 +17,9 @@ auth:
 primary:
   containerSecurityContext:
     readOnlyRootFilesystem: false
+  persistence:
+    enabled: true
+    size: 50Gi
   initdb:
     user: postgres
     scripts:
@@ -24,13 +27,3 @@ primary:
         CREATE EXTENSION cube;
         CREATE EXTENSION earthdistance;
         CREATE EXTENSION vectors;
-
-persistence:
-  enabled: true
-  size: 4Gi
-  storageClass: standard
-
-resources:
-  requests:
-    memory: 256Mi
-    cpu: 100m
