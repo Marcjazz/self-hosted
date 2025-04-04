@@ -8,17 +8,17 @@ architecture: standalone # Use specific architecture if needed
 global:
   security:
     allowInsecureImages: true
-  postgresql:
-    auth:
-      existingSecret: postgres-secret
-      postgresPasswordKey: postgres-password
+
+auth:
+  existingSecret: immich-postgres-secret
+  username: immich
+  database: immich
 
 primary:
   containerSecurityContext:
     readOnlyRootFilesystem: false
   initdb:
-    user: 'postgres'
-    password: '{{ .Values.global.postgresql.auth.postgresPasswordKey }}'
+    user: postgres
     scripts:
       create-extensions.sql: |
         CREATE EXTENSION cube;
@@ -28,7 +28,7 @@ primary:
 persistence:
   enabled: true
   size: 4Gi
-  storageClass: 'standard' # Adjust to your cluster's storage class
+  storageClass: standard
 
 resources:
   requests:

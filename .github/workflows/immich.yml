@@ -38,10 +38,10 @@ jobs:
 
       - name: Create Kubernetes Secret for PostgreSQL
         run: |
-          kubectl create secret generic postgres-secret \
-            --from-literal=username=${{ secrets.POSTGRES_USER }} \
+          kubectl create secret generic immich-postgres-secret \
+            --from-literal=username=immich \
+            --from-literal=database=immich \
             --from-literal=password=${{ secrets.POSTGRES_PASSWORD }} \
-            --from-literal=database=${{ secrets.POSTGRES_DB }} \
             --from-literal=postgres-password=${{ secrets.POSTGRES_ADMIN_PASSWORD }} \
             -n immich --dry-run=client -o yaml | kubectl apply -f -
 
