@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: cloudflared
+data:
+  config.yaml: |
+    tunnel: kdmarc-tunnel
+    credentials-file: /etc/cloudflared/credentials.json
+
+    ingress:
+      - hostname: argocd.kdmarc.xyz
+        service: http://argocd-server.argocd.svc.cluster.local:80
+      - hostname: ollama.kdmarc.xyz
+        service: http://ollama-service.ollama.svc.cluster.local:3000
+      - hostname: adguard.kdmarc.xyz
+        service: http://adguard-service.adguard.svc.cluster.local:80
+      - service: http_status:404
+

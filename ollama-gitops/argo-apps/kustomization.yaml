@@ -1,0 +1,6 @@
+# argo-apps/kustomization.yaml
+resources:
+  - argocd.yaml
+  - adguard.yaml
+  - ollama-apps.yaml
+
