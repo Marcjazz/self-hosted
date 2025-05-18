@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ollama        # create or reuse
+
+resources:
+  - ollama-deployment.yaml
+  - ollama-service.yaml
+  - openwebui-deployment.yaml
+  - openwebui-service.yaml
+  - ingress.yaml
+
+commonLabels:
+  app: ollama-stack
+
+images:
+  - name: ollama/ollama
+    newTag: latest            # pin a version if you like
+  - name: ghcr.io/open-webui/open-webui
+    newTag: v0.6.9
+

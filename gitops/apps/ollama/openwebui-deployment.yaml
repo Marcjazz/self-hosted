@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openwebui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openwebui
+  template:
+    metadata:
+      labels:
+        app: openwebui
+    spec:
+      containers:
+        - name: webui
+          image: ghcr.io/open-webui/open-webui:v0.6.9
+          ports:
+            - containerPort: 3000
+          env:
+            - name: OLLAMA_BASE_URL
+              value: http://ollama:11434           # talk to ClusterIP service
+          volumeMounts:
+            - name: ui-data
+              mountPath: /app/backend/data
+      volumes:
+        - name: ui-data
+          hostPath:
+            path: /data/ollama-webui
+

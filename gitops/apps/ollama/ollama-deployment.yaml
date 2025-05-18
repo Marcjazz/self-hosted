@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ollama
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ollama
+  template:
+    metadata:
+      labels:
+        app: ollama
+    spec:
+      runtimeClassName: nvidia                       # K3s: automatically picks containerd-with-GPU
+      containers:
+        - name: ollama
+          image: ollama/ollama:latest
+          ports:
+            - containerPort: 11434                  # Ollama API
+          env:
+            - name: OLLAMA_HOST
+              value: "0.0.0.0"
+            - name: OLLAMA_MODELS
+              value: "/models"
+            - name: OLLAMA_NUM_PARALLEL
+              value: "1"
+          volumeMounts:
+            - name: ollama-models
+              mountPath: /models
+            - name: ollama-logs
+              mountPath: /logs
+          resources:
+            limits:
+              nvidia.com/gpu: 1                     # <-- request one GPU
+      volumes:
+        - name: ollama-models
+          hostPath:                                 # simplest local storage
+            path: /data/ollama/models
+        - name: ollama-logs
+          hostPath:
+            path: /data/ollama/logs
+

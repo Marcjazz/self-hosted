@@ -1,0 +1,55 @@
+postgresql:
+  enabled: false
+
+immich:
+  server:
+    persistence:
+      enabled: true
+      existingClaim: immich-media-pvc
+
+    ingress:
+      enabled: true
+      className: "nginx"
+      annotations:
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      hosts:
+        - host: photos.kdmarc.xyz
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - photos.kdmarc.xyz
+          secretName: immich-tls
+
+  database:
+    host: immich-postgres
+    port: 5432
+    username: immich
+    passwordSecret:
+      name: immich-postgres-secret
+      key: password
+    database: immich
+
+redis:
+  enabled: true
+  architecture: standalone
+  auth:
+    enabled: false
+
+machine-learning:
+  enabled: false
+  image:
+    repository: ghcr.io/immich-app/immich-machine-learning
+    pullPolicy: IfNotPresent
+  env:
+    TRANSFORMERS_CACHE: /cache
+  persistence:
+    cache:
+      enabled: true
+      size: 10Gi
+      # Optional: Set this to pvc to avoid downloading the ML models every start.
+      type: emptyDir
+      accessMode: ReadWriteMany
+      # storageClass: standard
+
