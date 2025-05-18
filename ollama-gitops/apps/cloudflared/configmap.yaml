@@ -15,5 +15,7 @@ data:
         service: http://ollama-service.ollama.svc.cluster.local:3000
       - hostname: adguard.kdmarc.xyz
         service: http://adguard-service.adguard.svc.cluster.local:80
+      - hostname: photos.kdmarc.xyz
+        service: http://immich.immich.svc.cluster.local:3001
       - service: http_status:404
 
